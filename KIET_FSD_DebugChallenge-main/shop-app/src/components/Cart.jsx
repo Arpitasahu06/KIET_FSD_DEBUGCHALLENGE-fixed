@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function Cart({ items, onRemove, onClose, onUpdateQty }) {
+  // BUG 6 : was `item.count` (undefined); correct field is `item.qty`
   const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   return (
@@ -30,6 +31,8 @@ export default function Cart({ items, onRemove, onClose, onUpdateQty }) {
                       <button
                         className="qty-btn"
                         onClick={() => onUpdateQty(item.id, item.qty - 1)}
+                        // BUG 7 : was `item.qty <= 0`; should be `<= 1` so
+                        // the button disables before qty can drop to 0
                         disabled={item.qty <= 1}
                       >−</button>
                       <span className="qty-value">{item.qty}</span>
