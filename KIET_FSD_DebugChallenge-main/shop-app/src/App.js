@@ -19,6 +19,7 @@ export default function App() {
       const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.category.toLowerCase().includes(searchQuery.toLowerCase());
+     // BUG 1: strict < / > replaced with <= / >= to include boundary prices
       const matchPrice = p.price >= priceRange.min && p.price <= priceRange.max;
       const matchCategory = category === 'All' || p.category === category;
       return matchSearch && matchPrice && matchCategory;
@@ -32,6 +33,8 @@ export default function App() {
       default: break;
     }
     return list;
+    // BUG 2 : `category` was missing from the dependency array, so the memo never
+  // re-ran when a category button was clicked
   }, [searchQuery, priceRange, sortBy,category]);
 
   function addToCart(product) {
@@ -44,6 +47,7 @@ export default function App() {
   }
 
   function removeFromCart(id) {
+    // BUG 3 : was `i.id === id` (keeps only the deleted item); must be !==
     setCartItems(prev => prev.filter(i => i.id !== id));
   }
 
@@ -51,8 +55,9 @@ export default function App() {
     if (qty < 1) return;
     setCartItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
   }
-
+  // BUG 4 :  `i.count` which is undefined; correct field is `i.qty`
   const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
+  // BUG 5 FIX:  `i.productId` which doesn't exist; correct field is `i.id`
   const cartItemIds = new Set(cartItems.map(i => i.id));
 
   return (
