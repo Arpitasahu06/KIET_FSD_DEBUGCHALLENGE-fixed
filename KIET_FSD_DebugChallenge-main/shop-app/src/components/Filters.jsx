@@ -56,6 +56,8 @@ export default function Filters({ priceRange, onPriceChange, category, onCategor
         <h3 className="filter-label">Sort By</h3>
         <select className="sort-select" value={sortBy} onChange={e => onSortChange(e.target.value)}>
           <option value="default">Default</option>
+             {/* BUG 8 : option values were swapped — price-desc was labelled "Low to High"
+            and price-asc was labelled "High to Low". Corrected the labels to match values. */}
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
           <option value="rating">Highest Rated</option>
